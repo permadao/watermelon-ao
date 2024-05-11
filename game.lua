@@ -52,6 +52,7 @@ game.Play = function(msg)
         ao.send({
             Target = msg.From,
             Data = "Failed",
+            Error = "Not enough energy",
             Energy = tostring(player.energy)
         })
         return
@@ -106,7 +107,8 @@ game.Exit = function(msg)
         ao.send({
             Target = msg.From,
             Action = 'Verify-Error',
-            Data = "Verify failed",
+            Data = "Failed",
+            Error = "Verify failed"
         })
     end
 end
