@@ -62,7 +62,7 @@ Desc = "The Watermelon game test token"
 Ticker = Ticker or 'WGAME-TEST'
 Denomination = Denomination or 12
 Logo = Logo or 'SBCCXwwecBlDqRLUjb8dYABExTJXLieawf7m2aBJ-KY'
-Admin = ""
+Admin = Admin or ""
 
 --[[
      Add handlers for each incoming Action defined by the ao Standard Token Specification
