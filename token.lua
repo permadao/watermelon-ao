@@ -1,5 +1,5 @@
-local bint = require('.bint')(256)
-local ao = require('ao')
+local bint = require('local_libsn.bint')(256)
+local ao = require('local_libsn.ao')
 --[[
   This module implements the ao Standard Token Specification.
 
@@ -57,7 +57,8 @@ Variant = "0.0.3"
 
 -- token should be idempotent and not change previous state updates
 Balances = Balances or { [ao.id] = utils.toBalanceValue(10000 * 1e12) }
-Name = Name or 'Watermelon game test'
+Name = 'Watermelon game test token'
+Desc = "The Watermelon game test token"
 Ticker = Ticker or 'WGAME-TEST'
 Denomination = Denomination or 12
 Logo = Logo or 'SBCCXwwecBlDqRLUjb8dYABExTJXLieawf7m2aBJ-KY'
@@ -80,7 +81,8 @@ Handlers.add('info', Handlers.utils.hasMatchingTag('Action', 'Info'), function(m
         Name = Name,
         Ticker = Ticker,
         Logo = Logo,
-        Denomination = tostring(Denomination)
+        Denomination = tostring(Denomination),
+        Desc = Desc
     })
 end)
 
@@ -219,7 +221,7 @@ Handlers.add('mint', Handlers.utils.hasMatchingTag('Action', 'Mint'), function(m
     end
 
     if msg.From == ao.id or msg.From == Admin then
-        to = ""
+        local to = ""
         if msg.Tags.To then
             to = msg.Tags.To
         else
