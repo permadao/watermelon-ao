@@ -19,6 +19,7 @@ function Player:new(o)
     o.energy = 10
     o.score = 0
     o.timeline = {} -- Record player operation sequence
+    o.state = "idle" -- idle or playing
     return o
 end
 
@@ -44,11 +45,8 @@ game.Play = function(msg)
         Players[msg.From] = Player:new(nil)
     end
     local player = Players[msg.From]
-    if player.energy > 0 then
-        player.energy = player.energy - 1
-        -- clear timeline
-        player.timeline = {}
-    else
+
+    if player.energy <= 0 then
         ao.send({
             Target = msg.From,
             Data = "Failed",
@@ -57,6 +55,11 @@ game.Play = function(msg)
         })
         return
     end
+
+    player.energy = player.energy - 1
+    player.state = "playing"
+    -- clear timeline
+    player.timeline = {}
 
     ao.send({
         Target = msg.From,
@@ -94,6 +97,19 @@ game.Exit = function(msg)
         Players[msg.From] = Player:new(nil)
     end
 
+    local player = Players[msg.From]
+    if player.state ~= "playing" then
+        ao.send({
+            Target = msg.From,
+            Action = 'Verify-Error',
+            Data = "Failed",
+            Error = "Player is not playing the game"
+        })
+        return
+    end
+
+    player.state = "idle"
+
     local valid = game.Verify(msg.From, bint(msg.Tags.Score))
     if valid then
         local tokens = game.CalculateToken(bint(msg.Tags.Score))
@@ -114,12 +130,14 @@ game.Exit = function(msg)
 end
 
 --[[
-     game and get score
+     verify 
 
      -- player_addr: string
      -- score: int 
+     -- return: bool
 ]]--
 game.Verify = function(player_addr, score)
+    -- TODO: verify player's timeline
     return true
 end
 
