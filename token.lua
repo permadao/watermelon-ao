@@ -1,5 +1,5 @@
-local bint = require('local_libsn.bint')(256)
-local ao = require('local_libsn.ao')
+local bint = require('.bint')(256)
+local ao = require('ao')
 --[[
   This module implements the ao Standard Token Specification.
 
@@ -204,7 +204,6 @@ end)
 Handlers.add('mint', Handlers.utils.hasMatchingTag('Action', 'Mint'), function(msg)
     assert(type(msg.Quantity) == 'string', 'Quantity is required!')
     assert(bint(0) < bint(msg.Quantity), 'Quantity must be greater than zero!')
-
     if type(msg.Quantity) ~= 'string' then
         ao.send({
             Target = msg.From,
@@ -234,6 +233,8 @@ Handlers.add('mint', Handlers.utils.hasMatchingTag('Action', 'Mint'), function(m
        
         ao.send({
             Target = msg.From,
+            Action = 'Mint-Success',
+            MintTo = to,
             Data = Colors.gray .. "Successfully minted " .. Colors.blue .. msg.Quantity .. " to " .. Colors.red .. to .. Colors.reset
         })
     else
